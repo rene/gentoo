@@ -1,0 +1,8 @@
+--- docs/net-tvtime.desktop	2011-01-31 23:35:26.000000000 -0200
++++ docs/net-tvtime-fix.desktop	2013-04-11 01:54:56.000000000 -0300
+@@ -7,4 +7,4 @@
+ GenericName=Television Viewer
+ Terminal=false
+ Type=Application
+-Categories=Application;AudioVideo;
++Categories=AudioVideo;
