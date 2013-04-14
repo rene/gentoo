@@ -28,7 +28,6 @@ RDEPEND="x11-libs/libSM
 	>=sys-libs/zlib-1.1.4
 	>=media-libs/libpng-1.2
 	>=dev-libs/libxml2-2.5.11
-	alsa? ( media-libs/alsa-lib )
 	nls? ( virtual/libintl )"
 
 DEPEND="${RDEPEND}
