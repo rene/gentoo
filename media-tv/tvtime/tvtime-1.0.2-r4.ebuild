@@ -34,7 +34,6 @@ DEPEND="${RDEPEND}
 	nls? ( sys-devel/gettext )
 	virtual/pkgconfig"
 
-S="${WORKDIR}/${P}"
 DOCS=( ChangeLog AUTHORS NEWS README )
 
 src_prepare() {
