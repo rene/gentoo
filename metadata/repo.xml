@@ -2,7 +2,7 @@
 <repositories version="1.0">
 	<repo priority="50" quality="experimental" status="unofficial">
 		<name>rene</name>
-		<description>Gentoo's Renê custom ebuilds.</description>
+		<description>Gentoo's Rene custom ebuilds.</description>
 		<homepage>https://github.com/rene/gentoo</homepage>
 		<owner>
 			<email>rene@renesp.com.br</email>
