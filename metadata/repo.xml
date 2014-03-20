@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<repositories version="1.0">
+	<repo priority="50" quality="experimental" status="unofficial">
+		<name>rene</name>
+		<description>Gentoo's RenÃ custom ebuilds.</description>
+		<homepage>https://github.com/rene/gentoo</homepage>
+		<owner>
+			<email>rene@renesp.com.br</email>
+		</owner>
+		<source type="git">git://github.com/rene/gentoo.git</source>
+	</repo>
+</repositories>
