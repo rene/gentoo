@@ -1,0 +1,100 @@
+diff -urpN libcomplearn-1.1.7/src/anydecompress.c libcomplearn-1.1.7-rsp/src/anydecompress.c
+--- libcomplearn-1.1.7/src/anydecompress.c	2010-01-10 22:03:47.000000000 -0200
++++ libcomplearn-1.1.7-rsp/src/anydecompress.c	2014-03-20 17:36:19.000000000 -0300
+@@ -29,7 +29,7 @@ SUCH DAMAGE.
+ #include <stdio.h>
+ #include <string.h>
+ #include <stdlib.h>
+-#include <glib/garray.h>
++#include <glib.h>
+ #include <getopt.h>
+ #include <locale.h>
+ #include <libintl.h>
+diff -urpN libcomplearn-1.1.7/src/complearn/complearn-compressor-driver.h libcomplearn-1.1.7-rsp/src/complearn/complearn-compressor-driver.h
+--- libcomplearn-1.1.7/src/complearn/complearn-compressor-driver.h	2010-01-10 22:03:47.000000000 -0200
++++ libcomplearn-1.1.7-rsp/src/complearn/complearn-compressor-driver.h	2014-03-20 17:49:10.000000000 -0300
+@@ -4,7 +4,6 @@
+ #include <glib-object.h>
+ 
+ 
+-#include <glib/garray.h>
+ #include <libintl.h>
+ #include <stdlib.h>
+ #include "real-compressor.h"
+diff -urpN libcomplearn-1.1.7/src/complearn/complearn-external-compressor.h libcomplearn-1.1.7-rsp/src/complearn/complearn-external-compressor.h
+--- libcomplearn-1.1.7/src/complearn/complearn-external-compressor.h	2010-01-10 22:03:47.000000000 -0200
++++ libcomplearn-1.1.7-rsp/src/complearn/complearn-external-compressor.h	2014-03-20 17:48:28.000000000 -0300
+@@ -4,7 +4,6 @@
+ #include <glib-object.h>
+ 
+ 
+-#include <glib/garray.h>
+ #include <libintl.h>
+ #include "real-compressor.h"
+ #include "complearn-real-compressor-adaptor.h"
+diff -urpN libcomplearn-1.1.7/src/complearn/complearn-external-file-compressor.h libcomplearn-1.1.7-rsp/src/complearn/complearn-external-file-compressor.h
+--- libcomplearn-1.1.7/src/complearn/complearn-external-file-compressor.h	2010-01-10 22:03:47.000000000 -0200
++++ libcomplearn-1.1.7-rsp/src/complearn/complearn-external-file-compressor.h	2014-03-20 17:48:50.000000000 -0300
+@@ -4,7 +4,6 @@
+ #include <glib-object.h>
+ 
+ 
+-#include <glib/garray.h>
+ #include <libintl.h>
+ #include "real-compressor.h"
+ #include "complearn-real-compressor-adaptor.h"
+diff -urpN libcomplearn-1.1.7/src/complearn/complearn-rcbzip.h libcomplearn-1.1.7-rsp/src/complearn/complearn-rcbzip.h
+--- libcomplearn-1.1.7/src/complearn/complearn-rcbzip.h	2010-01-10 22:03:47.000000000 -0200
++++ libcomplearn-1.1.7-rsp/src/complearn/complearn-rcbzip.h	2014-03-20 17:48:09.000000000 -0300
+@@ -4,7 +4,6 @@
+ #include <glib-object.h>
+ 
+ 
+-#include <glib/garray.h>
+ #include <libintl.h>
+ #include "real-compressor.h"
+ #include "complearn-real-compressor-adaptor.h"
+diff -urpN libcomplearn-1.1.7/src/complearn/complearn-rcgzip.h libcomplearn-1.1.7-rsp/src/complearn/complearn-rcgzip.h
+--- libcomplearn-1.1.7/src/complearn/complearn-rcgzip.h	2010-01-10 22:03:47.000000000 -0200
++++ libcomplearn-1.1.7-rsp/src/complearn/complearn-rcgzip.h	2014-03-20 17:52:55.000000000 -0300
+@@ -4,7 +4,6 @@
+ #include <glib-object.h>
+ 
+ 
+-#include <glib/garray.h>
+ #include <libintl.h>
+ #include "real-compressor.h"
+ #include "complearn-real-compressor-adaptor.h"
+diff -urpN libcomplearn-1.1.7/src/complearn/complearn-real-compressor-adaptor.h libcomplearn-1.1.7-rsp/src/complearn/complearn-real-compressor-adaptor.h
+--- libcomplearn-1.1.7/src/complearn/complearn-real-compressor-adaptor.h	2010-01-10 22:03:47.000000000 -0200
++++ libcomplearn-1.1.7-rsp/src/complearn/complearn-real-compressor-adaptor.h	2014-03-20 17:49:35.000000000 -0300
+@@ -4,7 +4,6 @@
+ #include <glib-object.h>
+ 
+ 
+-#include <glib/garray.h>
+ #include "real-compressor.h"
+ 
+ #ifndef __COMPLEARN_REAL_COMPRESSOR_ADAPTOR_H__
+diff -urpN libcomplearn-1.1.7/src/complearn/complearn-vcblocksort.h libcomplearn-1.1.7-rsp/src/complearn/complearn-vcblocksort.h
+--- libcomplearn-1.1.7/src/complearn/complearn-vcblocksort.h	2010-01-10 22:03:47.000000000 -0200
++++ libcomplearn-1.1.7-rsp/src/complearn/complearn-vcblocksort.h	2014-03-20 17:49:23.000000000 -0300
+@@ -4,7 +4,6 @@
+ #include <glib-object.h>
+ 
+ 
+-#include <glib/garray.h>
+ #include "real-compressor.h"
+ #include "complearn-real-compressor-adaptor.h"
+ 
+diff -urpN libcomplearn-1.1.7/src/complearn/real-compressor.h libcomplearn-1.1.7-rsp/src/complearn/real-compressor.h
+--- libcomplearn-1.1.7/src/complearn/real-compressor.h	2010-01-10 22:03:47.000000000 -0200
++++ libcomplearn-1.1.7-rsp/src/complearn/real-compressor.h	2014-03-20 17:49:00.000000000 -0300
+@@ -9,7 +9,6 @@
+ 
+ #include <glib.h>
+ #include <glib-object.h>
+-#include <glib/garray.h>
+ #include <gsl/gsl_matrix.h>
+ 
+ #define COMPLEARN_ERROR 1
