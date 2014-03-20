@@ -8,5 +8,13 @@ tvtime          - media-tv/tvtime
 motion          - media-video/motion
 eagle           - sci-electronics/eagle
 bittorrent-sync - net-p2p/bittorrent-sync 
+complearn       - sci-libs/*
 
+
+HOW TO USE THIS OVERLAY:
+-----------------------
+
+You can use layman to add this repository to your overlays:
+
+	sudo layman -o https://github.com/rene/gentoo/raw/master/metadata/repo.xml -a rene
 
