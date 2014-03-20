@@ -1,6 +1,6 @@
 # Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-#
+# $Header: $
 
 EAPI="4"
 
@@ -12,7 +12,7 @@ SRC_URI="ftp://ftp.cadsoft.de/${PN}/program/${PV%\.[0-9]}/${PN}-lin-${PV}.run"
 
 LICENSE="cadsoft"
 SLOT="0"
-KEYWORDS=""
+KEYWORDS="amd64 x86"
 IUSE="doc linguas_de linguas_zh"
 
 RESTRICT="strip"

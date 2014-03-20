@@ -1,6 +1,9 @@
-# Copyright (C) 2013 Jonathan Vasquez <jvasquez1011@gmail.com>
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-#
+# $Header: $
+
+# Original ebuild from Joanathan Vasquez
+# Copyright (C) 2013 Jonathan Vasquez <jvasquez1011@gmail.com>
 
 EAPI="4"
 
