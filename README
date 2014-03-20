@@ -4,7 +4,9 @@ Renê's Gentoo overlay
 Current ebuils presents on this overlay:
 ----------------------------------------
 
-tvtime - media-tv/tvtime
-motion - media-video/motion
-eagle  - sci-electronics/eagle
+tvtime          - media-tv/tvtime
+motion          - media-video/motion
+eagle           - sci-electronics/eagle
+bittorrent-sync - net-p2p/bittorrent-sync 
+
 

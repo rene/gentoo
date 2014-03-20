@@ -1,6 +1,5 @@
-# Copyright 1999-2007 Gentoo Foundation
+# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 DESCRIPTION="8051 assembeler editor, compiler etc."
 HOMEPAGE="http://sourceforge.net/projects/mcu8051ide"
@@ -11,7 +10,7 @@ SLOT="0"
 KEYWORDS="~alpha amd64 ~ia64 ~ppc ~sparc x86"
 
 IUSE=""
-DEPEND="
+RDEPEND="
 	>=dev-tcltk/bwidget-1.7.0
 	>=dev-tcltk/itcl-1.7.0
 	>=dev-lang/tcl-1.7.0
@@ -24,16 +23,17 @@ DEPEND="
 MY_DESTDIR=/usr/share/${PN}
 
 src_compile() {
-	cd ${WORKDIR}/${PN} || die "Could not change directory."
+	cd "${WORKDIR}/${PN}" || die "Could not change directory."
 	./configure --path-to-lib="${MY_DESTDIR}/lib" || die "Launcher creation failed"
 }
 
 src_install() {
 	dodir ${MY_DESTDIR} || die "Directory creation failed."
-	cd ${WORKDIR}/${PN} || die "Could not change directory."
+	cd "${WORKDIR}/${PN}" || die "Could not change directory."
 	dobin mcu8051ide || die "Launcher integration failed (dobin mcu8051ide)"
-	cp -r ./{demo,doc,lib,icons} ${D}/${MY_DESTDIR} || die "Data installation failed."
-	dodoc LICENSE README TODO ChangeLog dependencies.txt
+	cp -r ./{demo,doc,lib,icons} "${D}/${MY_DESTDIR}" || die "Data installation failed."
+	#dodoc LICENSE README TODO ChangeLog dependencies.txt
+	dodoc README TODO ChangeLog dependencies.txt
 }
 
 pkg_postinst() {
