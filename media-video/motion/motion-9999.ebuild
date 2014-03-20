@@ -68,4 +68,3 @@ pkg_postinst() {
 	elog "You can install motion detection as a service, use:"
 	elog "rc-update add motion default"
 }
-
