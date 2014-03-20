@@ -26,14 +26,14 @@ QA_PREBUILT="opt/btsync/btsync"
 S="${WORKDIR}"
 
 src_install() {
-	mkdir -p ${D}/opt/${NAME} && cd ${D}/opt/${NAME}
-	mkdir -p ${D}/etc/{init.d,${NAME}}
+	mkdir -p "${D}/opt/${NAME}" && cd "${D}/opt/${NAME}"
+	mkdir -p "${D}/etc/{init.d,${NAME}}"
 
-	cp ${S}/btsync .
-	cp ${S}/LICENSE.TXT .
-	./btsync --dump-sample-config > ${D}/etc/${NAME}/config
-	cp ${FILESDIR}/init.d/${NAME} ${D}/etc/init.d/
+	cp "${S}/btsync" .
+	cp "${S}/LICENSE.TXT" .
+	./btsync --dump-sample-config > "${D}/etc/${NAME}/config"
+	cp "${FILESDIR}/init.d/${NAME}" "${D}/etc/init.d/"
 
 	# Set more secure permissions
-	chmod 755 ${D}/etc/init.d/btsync
+	chmod 755 "${D}/etc/init.d/btsync"
 }
