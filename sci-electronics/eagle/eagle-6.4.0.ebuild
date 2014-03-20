@@ -1,6 +1,5 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4"
 
@@ -58,7 +57,7 @@ case "${LINGUAS}" in
 		MY_LANG="en";;
 esac
 
-src_unpack() {
+src_prepare() {
 	# Extract the built-in .tar.bz2 file starting at __DATA__
 	sed  -e '1,/^__DATA__$/d' "${DISTDIR}/${A}" | tar xj || die "unpacking failed"
 }
