@@ -20,8 +20,10 @@ RDEPEND="dev-libs/libxml2
 	sys-libs/zlib
 	app-arch/bzip2
 	>=dev-libs/glib-2.0.0
-	sci-libs/gsl"
-DEPEND="${RDEPEND}"
+	sci-libs/gsl
+	dev-libs/check"
+DEPEND="dev-util/gob
+	${RDEPEND}"
 
 DOCS="NEWS README AUTHORS THANKS COPYING"
 
