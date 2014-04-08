@@ -55,6 +55,8 @@ src_prepare() {
 	epatch "${FILESDIR}/${P}_p20110131-gettext.patch"
 	epatch "${FILESDIR}/${PN}-libpng-1.5.patch"
 
+	epatch "${FILESDIR}/${PN}-1.0.2-pthread.patch"
+
 	AT_M4DIR="m4" eautoreconf
 }
 

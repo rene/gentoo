@@ -1,0 +1,11 @@
+--- src/Makefile.am	2011-01-31 23:35:26.000000000 -0200
++++ src/Makefile.am	2014-04-04 09:52:47.075011381 -0300
+@@ -77,7 +77,7 @@
+ 	$(PLUGIN_CFLAGS) $(X11_CFLAGS) $(XML2_FLAG) \
+ 	$(FONT_CFLAGS) $(AM_CFLAGS)
+ tvtime_LDFLAGS  = $(TTF_LIBS) $(ZLIB_LIBS) $(PNG_LIBS) \
+-	$(X11_LIBS) $(XML2_LIBS) $(ASOUND_LIBS) -lm -lstdc++
++	$(X11_LIBS) $(XML2_LIBS) $(ASOUND_LIBS) -lpthread -lm -lstdc++
+ 
+ tvtime_command_SOURCES = utils.h utils.c tvtimeconf.h tvtimeconf.c \
+ 	tvtime-command.c
