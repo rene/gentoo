@@ -29,6 +29,7 @@ DOCS="NEWS README AUTHORS THANKS COPYING"
 
 src_prepare() {
 	epatch "${FILESDIR}"/${PN}-1.1.7-fix_include.patch
+	epatch "${FILESDIR}"/${PN}-1.1.7-fix_load_zlib.patch
 }
 
 src_configure() {

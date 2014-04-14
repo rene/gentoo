@@ -1,0 +1,24 @@
+diff -urpN libcomplearn-1.1.7/src/complearn-rczlib.c libcomplearn-1.1.7-rsp/src/complearn-rczlib.c
+--- libcomplearn-1.1.7/src/complearn-rczlib.c	2010-01-10 22:03:47.000000000 -0200
++++ libcomplearn-1.1.7-rsp/src/complearn-rczlib.c	2014-04-14 14:45:22.097740750 -0300
+@@ -81,7 +81,7 @@ struct ZlibDynamicAdaptorCB *complearn_g
+     void *lib_handle;
+     haveTriedDL = 1;
+ #if HAVE_DLFCN_H
+-    lib_handle = dlopen("libz.so", RTLD_LAZY);
++    lib_handle = dlopen("libz.so.1", RTLD_LAZY);
+     if (lib_handle) {
+       zlibdda.compress2= dlsym(lib_handle,"compress2");
+       zlibdda.uncompress= dlsym(lib_handle,"uncompress");
+diff -urpN libcomplearn-1.1.7/src/complearn-rczlib.gob libcomplearn-1.1.7-rsp/src/complearn-rczlib.gob
+--- libcomplearn-1.1.7/src/complearn-rczlib.gob	2010-01-10 22:03:47.000000000 -0200
++++ libcomplearn-1.1.7-rsp/src/complearn-rczlib.gob	2014-04-14 14:45:33.721740791 -0300
+@@ -73,7 +73,7 @@ struct ZlibDynamicAdaptorCB *complearn_g
+     void *lib_handle;
+     haveTriedDL = 1;
+ #if HAVE_DLFCN_H
+-    lib_handle = dlopen("libz.so", RTLD_LAZY);
++    lib_handle = dlopen("libz.so.1", RTLD_LAZY);
+     if (lib_handle) {
+       zlibdda.compress2= dlsym(lib_handle,"compress2");
+       zlibdda.uncompress= dlsym(lib_handle,"uncompress");
