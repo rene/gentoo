@@ -1,0 +1,50 @@
+Author: Magnus Ekdahl <magnus@debian.org>
+Author: Guillem Jover <guillem@debian.org>
+
+---
+ Makefile |   39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+
+--- /dev/null
++++ b/Makefile
+@@ -0,0 +1,39 @@
++## Take a look at PPMdType.h for additional compiler & environment options
++
++TARGET = ppmd
++OBJS = PPMd.o Model.o
++
++prefix = /usr
++bindir = $(prefix)/bin
++
++INSTALL = install
++INSTALL_PROGRAM = $(INSTALL) -m 755
++
++CXXFLAGS = -g -fno-exceptions -fno-rtti -pedantic -Wall \
++         -Wno-unknown-pragmas -Wno-sign-compare -Wno-conversion \
++         -O2 -fomit-frame-pointer -fstrict-aliasing
++
++$(TARGET): $(OBJS)
++	$(CXX) -o $@ $^
++
++Model.o: Model.cpp PPMdType.h PPMd.h SubAlloc.hpp Coder.hpp
++PPMd.o: PPMd.cpp PPMdType.h PPMd.h
++
++clean:
++	$(RM) $(OBJS)
++	$(RM) $(TARGET)
++	$(RM) read_me.out read_me.pmd
++
++test: $(TARGET)
++	@rm -f read_me.pmd
++	@cp read_me.txt read_me.out
++	$(CURDIR)/$(TARGET) e read_me.out
++	@rm -f read_me.out
++	$(CURDIR)/$(TARGET) d read_me.pmd
++	cmp read_me.out read_me.txt
++	@rm -f read_me.out read_me.pmd
++
++install:
++	[ -d $(DESTDIR)$(bindir) ] || mkdir -p $(DESTDIR)$(bindir)
++	$(INSTALL_PROGRAM) $(TARGET) $(DESTDIR)$(bindir)
++
++.PHONY: clean install

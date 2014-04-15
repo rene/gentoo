@@ -1,0 +1,59 @@
+Author: Guillem Jover <guillem@debian.org>
+
+---
+ Model.cpp    |    8 ++++----
+ PPMdType.h   |    9 +++++----
+ SubAlloc.hpp |    2 +-
+ 3 files changed, 10 insertions(+), 9 deletions(-)
+
+--- a/SubAlloc.hpp
++++ b/SubAlloc.hpp
+@@ -53,7 +53,7 @@ inline void BLK_NODE::insert(void* pv,in
+     p->Stamp=~_DWORD(0);                    p->NU=NU;
+     Stamp++;
+ }
+-inline UINT U2B(UINT NU) { return 8*NU+4*NU; }
++inline UINT U2B(UINT NU) { return sizeof(DWORD)*2*NU + sizeof(DWORD)*NU; }
+ inline void SplitBlock(void* pv,UINT OldIndx,UINT NewIndx)
+ {
+     UINT i, k, UDiff=Indx2Units[OldIndx]-Indx2Units[NewIndx];
+--- a/PPMdType.h
++++ b/PPMdType.h
+@@ -22,13 +22,14 @@
+ #if defined(_WIN32_ENVIRONMENT_)
+ #include <windows.h>
+ #else /* _DOS32_ENVIRONMENT_ || _POSIX_ENVIRONMENT_ || _UNKNOWN_ENVIRONMENT_ */
++#include <stdint.h>
+ typedef int   BOOL;
+ #define FALSE 0
+ #define TRUE  1
+-typedef unsigned char  BYTE;                // it must be equal to uint8_t
+-typedef unsigned short WORD;                // it must be equal to uint16_t
+-typedef unsigned int  DWORD;                // it must be equal to uint32_t
+-typedef unsigned long QWORD;                // it must be equal to uint64_t
++typedef uint8_t        BYTE;
++typedef uint16_t       WORD;
++typedef uint32_t       DWORD;
++typedef uint64_t       QWORD;
+ typedef unsigned int   UINT;
+ #endif /* defined(_WIN32_ENVIRONMENT_)  */
+                         /* Optimal definitions for processors:              */
+--- a/Model.cpp
++++ b/Model.cpp
+@@ -66,12 +66,12 @@ static _THREAD1 WORD _THREAD BinSumm[25]
+ static _THREAD1 BOOL _THREAD CutOff;
+ 
+ inline void SWAP(PPM_CONTEXT::STATE& s1,PPM_CONTEXT::STATE& s2) {
+-    _WORD t1=(_WORD&)s1;                    _DWORD t2=s1.iSuccessor;
+-    (_WORD&)s1 = (_WORD&)s2;                s1.iSuccessor=s2.iSuccessor;
+-    (_WORD&)s2 = t1;                        s2.iSuccessor=t2;
++    PPM_CONTEXT::STATE t1 = s1;
++    s1 = s2;
++    s2 = t1;
+ }
+ inline void StateCpy(PPM_CONTEXT::STATE& s1,const PPM_CONTEXT::STATE& s2) {
+-    (_WORD&)s1 = (_WORD&)s2;                s1.iSuccessor=s2.iSuccessor;
++    s1 = s2;
+ }
+ void SEE2_CONTEXT::setShift_rare()
+ {

@@ -1,0 +1,31 @@
+Author: Guillem Jover <guillem@debian.org>
+
+---
+ PPMd.cpp |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+--- a/PPMd.cpp
++++ b/PPMd.cpp
+@@ -135,10 +135,10 @@ inline void EnvSetDateTimeAttr(const cha
+     utime(WrkStr,&t);                       chmod(WrkStr,ai.attrib);
+ }
+ struct ENV_FIND_RESULT {
+-    dirent de;
+     struct stat st;
++    char* filename;
+     char* fullpath;
+-    const char*  getFName() const { return de.d_name; }
++    const char*  getFName() const { return filename; }
+     const char*  getFullPath() const {return fullpath;}
+     void copyDateTimeAttr() const {
+         ai.attrib=st.st_mode;
+@@ -152,7 +152,8 @@ struct ENV_FILE_FINDER {
+     struct stat st;
+     ENV_FIND_RESULT getResult() {
+         ENV_FIND_RESULT Rslt;
+-        Rslt.de=*de;                        Rslt.st=st;
++        Rslt.st=st;
++        Rslt.filename= strdup(de->d_name);
+         string fullpath = getDir(string(pPattern))+"/"+de->d_name;
+         Rslt.fullpath= strdup(fullpath.c_str());
+         return Rslt;

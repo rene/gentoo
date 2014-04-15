@@ -1,0 +1,260 @@
+Author: Magnus Ekdahl <magnus@debian.org>
+Author: Guillem Jover <guillem@debian.org>
+
+---
+ PPMd.cpp   |   91 ++++++++++++++++++++++++++++++++++++++++++++++++-------------
+ PPMdType.h |    6 ++--
+ 2 files changed, 75 insertions(+), 22 deletions(-)
+
+--- a/PPMdType.h
++++ b/PPMdType.h
+@@ -11,9 +11,9 @@
+ #include <stdio.h>
+ #include <assert.h>
+ 
+-#define _WIN32_ENVIRONMENT_
++//#define _WIN32_ENVIRONMENT_
+ //#define _DOS32_ENVIRONMENT_
+-//#define _POSIX_ENVIRONMENT_
++#define _POSIX_ENVIRONMENT_
+ //#define _UNKNOWN_ENVIRONMENT_
+ #if defined(_WIN32_ENVIRONMENT_)+defined(_DOS32_ENVIRONMENT_)+defined(_POSIX_ENVIRONMENT_)+defined(_UNKNOWN_ENVIRONMENT_) != 1
+ #error Only one environment must be defined
+@@ -32,7 +32,7 @@ typedef unsigned long QWORD;
+ typedef unsigned int   UINT;
+ #endif /* defined(_WIN32_ENVIRONMENT_)  */
+                         /* Optimal definitions for processors:              */
+-#define _32_NORMAL    /* IA-32                                            */
++//#define _32_NORMAL    /* IA-32                                            */
+ //#define _64_NORMAL    /* AMD64/EM64T                                      */
+ //#define _32_EXOTIC    /* with request for 32bit alignment for uint32_t    */
+ //#define _64_EXOTIC    /* some unknown to me processors                    */
+--- a/PPMd.cpp
++++ b/PPMd.cpp
+@@ -5,6 +5,9 @@
+  *  Contents: main routine                                                  *
+  *  Comments: system & compiler dependent file                              *
+  ****************************************************************************/
++#include <string>
++#include <stdio.h>
++#include <stdarg.h>
+ #include <ctype.h>
+ #include <stdlib.h>
+ #include <string.h>
+@@ -13,15 +16,29 @@
+ 
+ #define BACKSLASH '\\'
+ #define USAGE_STR "Usage: PPMd <e|d> [switches] <FileName[s] | Wildcard[s]>\n"
++
++using namespace std;
+ static const char* pFName;
+ static DWORD StartFilePosition;
+ static BOOL EncodeFlag;
++bool silent=false;
+ static clock_t StartClock;
+ static struct ARC_INFO { // FileLength & CRC? Hmm, maybe in another times...
+     DWORD signature,attrib;
+     WORD  info,FNLen,time,date;
+ } ai;
+ 
++extern "C" void printsilent(const char *fmt, ...)
++{
++  va_list argp;
++  if(silent == false)
++    {
++      va_start(argp, fmt);
++      vprintf(fmt, argp);
++      va_end(argp);
++    }
++}
++
+ #if defined(_WIN32_ENVIRONMENT_)
+ #include <conio.h>
+ 
+@@ -120,7 +137,9 @@ inline void EnvSetDateTimeAttr(const cha
+ struct ENV_FIND_RESULT {
+     dirent de;
+     struct stat st;
++    char* fullpath;
+     const char*  getFName() const { return de.d_name; }
++    const char*  getFullPath() const {return fullpath;}
+     void copyDateTimeAttr() const {
+         ai.attrib=st.st_mode;
+         ai.time=st.st_mtime & 0xFFFF;       ai.date=st.st_mtime >> 16;
+@@ -134,16 +153,40 @@ struct ENV_FILE_FINDER {
+     ENV_FIND_RESULT getResult() {
+         ENV_FIND_RESULT Rslt;
+         Rslt.de=*de;                        Rslt.st=st;
++        string fullpath = getDir(string(pPattern))+"/"+de->d_name;
++        Rslt.fullpath= strdup(fullpath.c_str());
+         return Rslt;
+     }
++    string getName(string FullPath)
++    {
++        int i = FullPath.length()-2;
++        while(i > 0 && FullPath[i] != '/')      i--;
++
++        if(i<=0 || i+1>= FullPath.length()-1) return FullPath;
++        else return FullPath.substr(i+1,FullPath.length()-1);
++    }
++    string getDir(string FullPath)
++    {
++        string name = getName(FullPath);
++        if(FullPath.size() == name.size())
++          return string(".");
++        else
++          return FullPath.substr(0,FullPath.size()-1-name.size());
++    }
++
+     BOOL isFileValid() {
+-        return (fnmatch(pPattern,de->d_name,FNM_NOESCAPE) == 0 &&
+-                stat(de->d_name,&st) == 0 && (st.st_mode & S_IRUSR) != 0 &&
++        string name = getName(string(pPattern));
++
++        return (fnmatch(name.c_str(),de->d_name,FNM_NOESCAPE) == 0 &&
++                stat((getDir(string(pPattern)) + "/" + de->d_name).c_str(),&st) == 0 &&
++                (st.st_mode & S_IRUSR) != 0 &&
+                 st.st_nlink == 1);
+     }
++
+     BOOL findFirst(const char* Pattern) {
+         pPattern=Pattern;
+-        return ((dir=opendir(".")) && (de=readdir(dir)) != NULL);
++        return ((dir=opendir(getDir(string(pPattern)).c_str())) &&
++                (de=readdir(dir)) != NULL);
+     }
+     BOOL findNext() { return ((de=readdir(dir)) != NULL); }
+     void findStop() { closedir(dir); }
+@@ -185,7 +228,9 @@ static const char* const MTxt[] = { "Can
+     "User break\n", "unknown command: %s\n", "unknown switch: %s\n",
+     "designed and written by Dmitry Shkarin <dmitry.shkarin@mtu-net.ru>\n"
+     USAGE_STR
+-    "Switches (for encoding only):\n"
++    "Switches \n"
++    "\t-s     - be silent\n\n"
++    "(for encoding only):\n"
+     "\t-d     - delete file[s] after processing, default: disabled\n"
+     "\t-fName - set output file name to Name\n"
+     "\t-mN    - use N MB memory - [1,256], default: %d\n"
+@@ -213,7 +258,7 @@ void _STDCALL PrintInfo(_PPMD_FILE* Deco
+     if ( !EncodeFlag )                      SWAP(NDec,NEnc);
+     sprintf(WrkStr,"%14s:%7d >%7d, %1d.%02d bpb, used:%3d.%1dMB, speed: %d KB/sec",
+             pFName,NDec,NEnc,n1,n2,m1,m2,Speed);
+-    printf("%-79.79s\r",WrkStr);            fflush(stdout);
++    printsilent("%-79.79s\r",WrkStr);            fflush(stdout);
+ }
+ static char* _STDCALL ChangeExtRare(const char* In,char* Out,const char* Ext)
+ {
+@@ -235,7 +280,7 @@ static BOOL YesToAll=FALSE;
+     FILE* fp=fopen(FName,"rb");
+     if ( !fp )                              return TRUE;
+     fclose(fp);
+-    if ( YesToAll )                         return RemoveFile(FName);
++    if ( YesToAll || silent == true)        return RemoveFile(FName);
+     printf("%s already exists, overwrite?: <Y>es, <N>o, <A>ll, <Q>uit?",FName);
+     for ( ; ; )
+         switch ( toupper(EnvGetCh()) ) {
+@@ -248,13 +293,13 @@ static BOOL YesToAll=FALSE;
+ static FILE* FOpen(const char* FName,const char* mode)
+ {
+     FILE* fp=fopen(FName,mode);
+-    if ( !fp ) { printf(MTxt[0],FName);     exit(-1); }
++    if ( !fp ) { printsilent(MTxt[0],FName);     exit(-1); }
+     setvbuf(fp,NULL,_IOFBF,64*1024);        return fp;
+ }
+ inline void PrepareCoding(int SASize,FILE* fp)
+ {
+     if ( !StartSubAllocator(SASize) ) {
+-        printf(MTxt[2]);                    exit(-1);
++        printsilent(MTxt[2]);               exit(-1);
+     }
+     StartClock=clock();                     StartFilePosition=ftell(fp);
+ }
+@@ -264,7 +309,8 @@ inline void EncodeFile(const ENV_FIND_RE
+     strcpy(WrkStr,ArcName);
+     if (!WrkStr[0] && !TestAccessRare(ChangeExtRare(efr.getFName(),WrkStr,"pmd")))
+                 return;
+-    FILE* fpIn = FOpen(efr.getFName(),"rb"), * fpOut = FOpen(WrkStr,"a+b");
++    printsilent("opening in: -%s-, out: -%s-",efr.getFName(),WrkStr);
++    FILE* fpIn = FOpen(efr.getFullPath(),"rb"), * fpOut = FOpen(WrkStr,"a+b");
+     pFName=strrchr(efr.getFName(),BACKSLASH);
+     pFName=( pFName )?(pFName+1):(efr.getFName());
+     efr.copyDateTimeAttr();
+@@ -274,7 +320,7 @@ inline void EncodeFile(const ENV_FIND_RE
+     PrepareCoding(SASize,fpOut);            EncodeFile(fpOut,fpIn,MaxOrder,CutOff);
+     putchar('\n');
+     if (ferror(fpOut) || ferror(fpIn)) {
+-        printf(MTxt[1],efr.getFName(),WrkStr);
++        printsilent(MTxt[1],efr.getFName(),WrkStr);
+         exit(-1);
+     }
+     fclose(fpIn);                           fclose(fpOut);
+@@ -293,12 +339,12 @@ inline BOOL DecodeOneFile(FILE* fpIn)
+     MaxOrder=(ai.info & 0x0F)+1;            SASize=((ai.info >> 4) & 0xFF)+1;
+     DWORD Variant=(ai.info >> 12)+'A';
+     if (ai.signature != PPMdSignature || Variant != PROG_VAR) {
+-        printf(MTxt[0],WrkStr);             exit(-1);
++        printsilent(MTxt[0],WrkStr);        exit(-1);
+     }
+     PrepareCoding(SASize,fpIn);             DecodeFile(fpOut,fpIn,MaxOrder,CutOff);
+     putchar('\n');
+     if (ferror(fpOut) || ferror(fpIn) || feof(fpIn)) {
+-        printf(MTxt[1],WrkStr,WrkStr);      exit(-1);
++        printsilent(MTxt[1],WrkStr,WrkStr); exit(-1);
+     }
+     fclose(fpOut);                          EnvSetDateTimeAttr(WrkStr);
+     return TRUE;
+@@ -322,7 +368,7 @@ inline void TestArchive(char* ArcName,co
+     if ( fp ) {
+         if (!fread(&ai,sizeof(ai),1,fp) || ai.signature != PPMdSignature ||
+                                             (ai.info >> 12)+'A' != PROG_VAR) {
+-            printf(MTxt[0],ArcName);        exit(-1);
++            printsilent(MTxt[0],ArcName);   exit(-1);
+         }
+         fclose(fp);
+     }
+@@ -344,14 +390,17 @@ int main(int argc, char *argv[])
+     char ArcName[260];
+     BOOL DeleteFile=FALSE, CutOff=FALSE;
+     int i, MaxOrder=4, SASize=10;
+-    printf("Fast PPMII compressor for textual data, variant %c, "__DATE__"\n",PROG_VAR);
+-    if (argc < 3) { printf(MTxt[6],SASize,MAX_O,MaxOrder);      return -1; }
++    if (argc < 3) { printsilent(MTxt[6],SASize,MAX_O,MaxOrder); return -1; }
+     switch ( toupper(argv[1][0]) ) {
+         case 'E': EncodeFlag=TRUE;                              break;
+         case 'D': EncodeFlag=FALSE;                             break;
+-        default : printf(MTxt[4],argv[1]);                      return -1;
++        default : printsilent(MTxt[4],argv[1]);                 return -1;
+     }
+-    for (ArcName[0]=0,i=2;i < argc && (argv[i][0] == '-' || argv[i][0] == '/');i++)
++    for (ArcName[0]=0,i=2;i < argc && (argv[i][0] == '-'
++#ifndef _POSIX_ENVIRONMENT_
++         || argv[i][0] == '/'
++#endif
++         );i++)
+         switch ( toupper(argv[i][1]) ) {
+             case 'D': DeleteFile=TRUE;                          break;
+             case 'F': TestArchive(ArcName,argv[i]+2);           break;
+@@ -359,8 +408,12 @@ int main(int argc, char *argv[])
+             case 'O': MaxOrder=CLAMP(atoi(argv[i]+2),2,int(MAX_O));
+                         break;
+             case 'R': CutOff=CLAMP(atoi(argv[i]+2),0,1);        break;
+-            default : printf(MTxt[5],argv[i]);   				return -1;
++            case 'S': silent = true; break;
++            default : printsilent(MTxt[5],argv[i]);             return -1;
+         }
++
++    printsilent("Fast PPMII compressor for textual data, variant %c, "__DATE__"\n",PROG_VAR);
++
+     FILE_LIST_NODE* pNode, * pFirstNode=NULL, ** ppNode=&pFirstNode;
+     for (ENV_FILE_FINDER eff;i < argc;i++) {
+         if ( eff.findFirst(argv[i]) )
+@@ -368,7 +421,7 @@ int main(int argc, char *argv[])
+                 if ( eff.isFileValid() ) {
+                     pNode = new FILE_LIST_NODE(eff.getResult(),ppNode);
+                     if ( !pNode ) {
+-                        printf(MTxt[2]);    return -1;
++                        printsilent(MTxt[2]);    return -1;
+                     }
+                     ppNode=&(pNode->next);
+                 }

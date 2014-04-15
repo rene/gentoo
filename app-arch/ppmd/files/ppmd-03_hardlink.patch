@@ -1,0 +1,18 @@
+Author: Guillem Jover <guillem@debian.org>
+
+---
+ PPMd.cpp |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+--- a/PPMd.cpp
++++ b/PPMd.cpp
+@@ -179,8 +179,7 @@ struct ENV_FILE_FINDER {
+ 
+         return (fnmatch(name.c_str(),de->d_name,FNM_NOESCAPE) == 0 &&
+                 stat((getDir(string(pPattern)) + "/" + de->d_name).c_str(),&st) == 0 &&
+-                (st.st_mode & S_IRUSR) != 0 &&
+-                st.st_nlink == 1);
++                (st.st_mode & S_IRUSR) != 0);
+     }
+ 
+     BOOL findFirst(const char* Pattern) {

@@ -1,0 +1,30 @@
+Author: Guillem Jover <guillem@debian.org>
+
+---
+ Coder.hpp |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+--- a/Coder.hpp
++++ b/Coder.hpp
+@@ -61,8 +61,8 @@ static _THREAD1 DWORD _THREAD low, _THRE
+ 
+ inline void rcInitEncoder() { low=0; range=DWORD(-1); }
+ #define RC_ENC_NORMALIZE(stream) {                                          \
+-    while ((low ^ (low+range)) < TOP || range < BOT &&                      \
+-            ((range= -low & (BOT-1)),1)) {                                  \
++    while ((low ^ (low+range)) < TOP ||                                     \
++           (range < BOT && ((range= -low & (BOT-1)),1))) {                  \
+         _PPMD_E_PUTC(low >> 24,stream);                                     \
+         range <<= 8;                        low <<= 8;                      \
+     }                                                                       \
+@@ -84,8 +84,8 @@ inline void rcInitDecoder(FILE* stream)
+             code=(code << 8) | _PPMD_D_GETC(stream);
+ }
+ #define RC_DEC_NORMALIZE(stream) {                                          \
+-    while ((low ^ (low+range)) < TOP || range < BOT &&                      \
+-            ((range= -low & (BOT-1)),1)) {                                  \
++    while ((low ^ (low+range)) < TOP ||                                     \
++           (range < BOT && ((range= -low & (BOT-1)),1))) {                  \
+         code=(code << 8) | _PPMD_D_GETC(stream);                            \
+         range <<= 8;                        low <<= 8;                      \
+     }                                                                       \

@@ -1,0 +1,13 @@
+diff -urpN ppmd-10.1/PPMdType.h ppmd-10.1-rsp/PPMdType.h
+--- ppmd-10.1/PPMdType.h	2014-04-14 17:10:20.673771869 -0300
++++ ppmd-10.1-rsp/PPMdType.h	2014-04-14 17:11:21.713772087 -0300
+@@ -38,7 +38,8 @@ typedef unsigned int   UINT;
+ //#define _32_EXOTIC    /* with request for 32bit alignment for uint32_t    */
+ //#define _64_EXOTIC    /* some unknown to me processors                    */
+ #if defined(_32_NORMAL)+defined(_64_NORMAL)+defined(_32_EXOTIC)+defined(_64_EXOTIC) != 1
+-#error Only one processor type must be defined
++#undef _32_NORMAL
++#warning Only one processor type must be defined. Undefining 32bits environment
+ #endif /* defined(_32_NORMAL)+defined(_64_NORMAL)+defined(_32_EXOTIC)+defined(_64_EXOTIC) != 1 */
+ 
+ #define _PAD_TO_64(Dummy)
