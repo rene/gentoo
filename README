@@ -9,6 +9,7 @@ motion          - media-video/motion
 eagle           - sci-electronics/eagle
 bittorrent-sync - net-p2p/bittorrent-sync 
 complearn       - sci-libs/*
+ppmd            - app-arch/ppmd
 
 
 HOW TO USE THIS OVERLAY:
